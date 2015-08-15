@@ -1,0 +1,37 @@
+# Maintainer: Jekyll Wu <adaptee [at] gmail [dot] com>
+
+pkgname=fqterm
+pkgver=0.9.8.2
+pkgrel=2
+pkgdesc="A cross-platform terminal emulator program which supports telnet/ssh1/ssh2"
+arch=('i686' 'x86_64')
+url="http://code.google.com/p/${pkgname}/"
+license=('GPL2')
+depends=('qt4' 'python')
+makedepends=('cmake')
+source=(http://${pkgname}.googlecode.com/files/${pkgname}-${pkgver}-svn1076.tar.gz
+        ${pkgname}.desktop
+        )
+
+build() {
+    cd ${srcdir}/${pkgname}
+
+    cmake . -DCMAKE_INSTALL_PREFIX=/usr \
+        -DQT_QMAKE_EXECUTABLE=qmake-qt4 \
+        -DCMAKE_SKIP_RPATH=ON \
+        -DCMAKE_BUILD_TYPE=Release
+    make
+}
+
+package() {
+
+    cd ${srcdir}/${pkgname}
+
+    make DESTDIR="${pkgdir}" install 
+    install -d ${pkgdir}/usr/{bin,share/{applications,pixmaps,${pkgname}}}
+    install -m644 res/pic/${pkgname}.png ${pkgdir}/usr/share/pixmaps/${pkgname}.png
+    install -Dm644 ${srcdir}/${pkgname}.desktop ${pkgdir}/usr/share/applications/${pkgname}.desktop
+}
+
+md5sums=('eaf7b51c1e3e0f13351f9f5678996d51'
+         'a6584cd72aee536ae3ec0d9f1b763201')
